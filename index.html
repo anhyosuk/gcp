@@ -23,7 +23,7 @@
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     }
 
-    /* 화면 전체를 완벽히 3분할하는 CSS Grid */
+    /* 3단 CSS Grid (상단 1fr - 중앙 42px - 하단 1fr) */
     .app-grid {
       display: grid;
       grid-template-rows: 1fr 42px 1fr;
@@ -38,7 +38,7 @@
       flex-direction: column;
       padding: 8px 12px;
       overflow: hidden;
-      min-height: 0; /* Flexbox 넘침 방지 핵심 속성 */
+      min-height: 0;
       position: relative;
       cursor: pointer;
     }
@@ -51,7 +51,7 @@
       border-bottom: 1px solid #cbd5e1;
     }
 
-    /* 중앙: 광고 배너 슬롯 */
+    /* 중앙: 광고 배너 영역 */
     .ad-slot {
       grid-row: 2;
       background-color: #0f172a;
@@ -79,7 +79,7 @@
       border-top: 1px solid #cbd5e1;
     }
 
-    /* 녹음 중 활성화 펄스 */
+    /* 녹음 중 활성화 펄스 효과 */
     .panel.recording {
       background-color: #fef2f2 !important;
       box-shadow: inset 0 0 0 3px #ef4444;
@@ -97,7 +97,7 @@
       justify-content: space-between;
       align-items: center;
       flex-shrink: 0;
-      height: 28px;
+      height: 30px;
       margin-bottom: 4px;
       gap: 6px;
     }
@@ -106,17 +106,17 @@
       font-size: 12px;
       font-weight: bold;
       color: #0f172a;
-      padding: 2px 4px;
-      border-radius: 4px;
+      padding: 3px 6px;
+      border-radius: 6px;
       border: 1px solid #cbd5e1;
       background-color: #ffffff;
-      max-width: 140px;
+      outline: none;
     }
 
     .header-right {
       display: flex;
       align-items: center;
-      gap: 4px;
+      gap: 5px;
     }
 
     .btn-speed {
@@ -133,7 +133,7 @@
     .badge-status {
       font-size: 10px;
       font-weight: 700;
-      padding: 3px 6px;
+      padding: 3px 8px;
       border-radius: 10px;
       background-color: #e2e8f0;
       color: #475569;
@@ -144,14 +144,14 @@
       color: #ffffff;
     }
 
-    /* 스크롤 대화창 (가장 중요) */
+    /* 대화 히스토리 스크롤 컨테이너 */
     .chat-scroll {
       flex: 1 1 0%;
       min-height: 0;
       overflow-y: auto;
       display: flex;
       flex-direction: column;
-      gap: 6px;
+      gap: 8px;
       padding: 4px 0;
       -webkit-overflow-scrolling: touch;
     }
@@ -160,7 +160,7 @@
       background-color: #ffffff;
       border: 1px solid #e2e8f0;
       border-radius: 8px;
-      padding: 6px 10px;
+      padding: 8px 12px;
       box-shadow: 0 1px 2px rgba(0,0,0,0.03);
     }
     .partner-panel .card {
@@ -168,30 +168,32 @@
     }
 
     .txt-trans {
-      font-size: 16px;
+      font-size: 17px;
       font-weight: 700;
       color: #0f172a;
-      line-height: 1.3;
+      line-height: 1.35;
       word-break: keep-all;
     }
     .txt-orig {
-      font-size: 11px;
+      font-size: 12px;
       color: #64748b;
-      margin-top: 2px;
+      margin-top: 3px;
     }
     .card-foot {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-top: 4px;
+      margin-top: 6px;
+      padding-top: 4px;
+      border-top: 1px dashed rgba(0,0,0,0.06);
     }
     .btn-replay {
       font-size: 10px;
       font-weight: 600;
       background-color: #e2e8f0;
       border: none;
-      padding: 2px 6px;
-      border-radius: 3px;
+      padding: 2px 7px;
+      border-radius: 4px;
       cursor: pointer;
       color: #1e293b;
     }
@@ -200,43 +202,19 @@
       color: #94a3b8;
     }
 
-    /* 여행 퀵 칩 바 */
-    .chip-scroll {
-      display: flex;
-      gap: 4px;
-      overflow-x: auto;
-      padding: 4px 0;
-      flex-shrink: 0;
-      scrollbar-width: none;
-    }
-    .chip-scroll::-webkit-scrollbar {
-      display: none;
-    }
-    .chip-item {
-      font-size: 11px;
-      font-weight: 600;
-      background-color: #eff6ff;
-      color: #1d4ed8;
-      border: 1px solid #bfdbfe;
-      padding: 3px 8px;
-      border-radius: 12px;
-      white-space: nowrap;
-      cursor: pointer;
-    }
-
     /* 하단 텍스트 입력창 */
     .input-row {
       display: flex;
-      gap: 4px;
-      padding-top: 4px;
+      gap: 6px;
+      padding-top: 6px;
       flex-shrink: 0;
-      height: 32px;
+      height: 36px;
     }
     .text-box {
       flex: 1;
       font-size: 12px;
-      padding: 4px 8px;
-      border-radius: 16px;
+      padding: 6px 10px;
+      border-radius: 18px;
       border: 1px solid #cbd5e1;
       outline: none;
       background-color: #ffffff;
@@ -244,15 +222,15 @@
     .btn-send {
       font-size: 11px;
       font-weight: 700;
-      padding: 0 10px;
-      border-radius: 16px;
+      padding: 0 14px;
+      border-radius: 18px;
       border: none;
       background-color: #2563eb;
       color: #ffffff;
       cursor: pointer;
     }
 
-    /* 권한 오버레이 */
+    /* 초기 권한 오버레이 */
     .overlay {
       position: absolute;
       inset: 0;
@@ -268,7 +246,7 @@
     }
     .btn-start {
       margin-top: 16px;
-      padding: 12px 24px;
+      padding: 12px 26px;
       background-color: #2563eb;
       border: none;
       border-radius: 20px;
@@ -281,7 +259,7 @@
 </head>
 <body>
 
-  <!-- 마이크 권한 모달 -->
+  <!-- 권한 안내 화면 -->
   <div id="overlay" class="overlay">
     <h2 style="font-size: 18px; margin-bottom: 8px;">대면 여행 통역기</h2>
     <p style="font-size: 13px; color: #cbd5e1; line-height: 1.5;">
@@ -295,9 +273,9 @@
     <!-- 상단: 상대방 영역 (180도 반전) -->
     <div class="panel partner-panel" id="partner-panel" onclick="onPanelTap(event, 'partner')">
       <div class="header-bar" onclick="event.stopPropagation()">
-        <select id="partner-lang" class="select-lang" onchange="applyLanguages()">
+        <select id="partner-lang" class="select-lang" onchange="onLanguageChange('partner')">
           <option value="tl|tl-PH" selected>필리핀 (Tagalog)</option>
-          <option value="en|en-US">공용 (English)</option>
+          <option value="en|en-US">미국/공용 (English)</option>
           <option value="ja|ja-JP">일본 (日本語)</option>
           <option value="vi|vi-VN">베트남 (Tiếng Việt)</option>
           <option value="th|th-TH">태국 (ภาษาไทย)</option>
@@ -307,24 +285,15 @@
         </select>
         <div class="header-right">
           <button class="btn-speed" id="partner-spd" onclick="toggleSpeed('partner')">1.0x</button>
-          <span class="badge-status" id="partner-badge">터치하여 말하기</span>
+          <span class="badge-status" id="partner-badge">Pindutin para magsalita</span>
         </div>
       </div>
 
-      <div class="chat-scroll" id="partner-chat">
-        <div class="card">
-          <div class="txt-trans">Kamusta! Pindutin para magsalita.</div>
-          <div class="txt-orig">화면을 터치하여 말씀하세요.</div>
-          <div class="card-foot">
-            <button class="btn-replay" onclick="event.stopPropagation(); playVoice('Kamusta! Pindutin para magsalita.', partnerTTS, pSpeed)">다시듣기</button>
-            <span class="txt-time">시작</span>
-          </div>
-        </div>
-      </div>
+      <div class="chat-scroll" id="partner-chat"></div>
 
       <div class="input-row" onclick="event.stopPropagation()">
-        <input type="text" id="partner-text" class="text-box" placeholder="직접 입력 (상대방 언어)" onkeypress="onEnter(event, 'partner')" />
-        <button class="btn-send" onclick="sendDirect('partner')">전송</button>
+        <input type="text" id="partner-text" class="text-box" placeholder="Mag-type dito..." onkeypress="onEnter(event, 'partner')" />
+        <button class="btn-send" id="partner-send-btn" onclick="sendDirect('partner')">Ipadala</button>
       </div>
     </div>
 
@@ -336,7 +305,7 @@
     <!-- 하단: 본인 영역 (정방향) -->
     <div class="panel user-panel" id="user-panel" onclick="onPanelTap(event, 'user')">
       <div class="header-bar" onclick="event.stopPropagation()">
-        <select id="user-lang" class="select-lang" onchange="applyLanguages()">
+        <select id="user-lang" class="select-lang" onchange="onLanguageChange('user')">
           <option value="ko|ko-KR" selected>본인: 한국어</option>
           <option value="en|en-US">본인: 영어</option>
           <option value="ja|ja-JP">본인: 일본어</option>
@@ -348,31 +317,11 @@
         </div>
       </div>
 
-      <div class="chat-scroll" id="user-chat">
-        <div class="card">
-          <div class="txt-trans">안녕하세요! 화면을 터치하여 말씀하세요.</div>
-          <div class="txt-orig">말하기를 마치려면 다시 터치하세요.</div>
-          <div class="card-foot">
-            <button class="btn-replay" onclick="event.stopPropagation(); playVoice('안녕하세요! 화면을 터치하여 말씀하세요.', userTTS, uSpeed)">다시듣기</button>
-            <span class="txt-time">시작</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- 여행 퀵 칩 바 -->
-      <div class="chip-scroll" onclick="event.stopPropagation()">
-        <button class="chip-item" onclick="sendChip('얼마예요?')">얼마예요?</button>
-        <button class="chip-item" onclick="sendChip('계산해 주세요.')">계산해 주세요</button>
-        <button class="chip-item" onclick="sendChip('영수증 주세요.')">영수증 주세요</button>
-        <button class="chip-item" onclick="sendChip('고수 빼주세요.')">고수 빼주세요</button>
-        <button class="chip-item" onclick="sendChip('화장실 어디예요?')">화장실 어디예요?</button>
-        <button class="chip-item" onclick="sendChip('물 좀 주세요.')">물 좀 주세요</button>
-        <button class="chip-item" onclick="sendChip('안 맵게 해주세요.')">안 맵게 해주세요</button>
-      </div>
+      <div class="chat-scroll" id="user-chat"></div>
 
       <div class="input-row" onclick="event.stopPropagation()">
-        <input type="text" id="user-text" class="text-box" placeholder="직접 입력 (한국어)" onkeypress="onEnter(event, 'user')" />
-        <button class="btn-send" onclick="sendDirect('user')">전송</button>
+        <input type="text" id="user-text" class="text-box" placeholder="직접 입력 (한국어)..." onkeypress="onEnter(event, 'user')" />
+        <button class="btn-send" id="user-send-btn" onclick="sendDirect('user')">전송</button>
       </div>
     </div>
   </div>
@@ -382,6 +331,90 @@
       navigator.serviceWorker.register('sw.js').catch(() => {});
     }
 
+    // 각 언어별 UI 현지화 사전
+    const UI_LOCALES = {
+      'tl': {
+        idle: 'Pindutin para magsalita',
+        rec: 'Nakikinig... (Pindutin para ihinto)',
+        placeholder: 'Mag-type dito...',
+        send: 'Ipadala',
+        replay: 'Pakinggan muli',
+        welcomeMain: 'Kamusta! Pindutin ang screen para magsalita.',
+        welcomeSub: 'Pindutin muli para ihinto.',
+        startTime: 'Simula'
+      },
+      'ko': {
+        idle: '터치하여 말하기',
+        rec: '듣는 중... (터치 시 완료)',
+        placeholder: '직접 입력 (한국어)...',
+        send: '전송',
+        replay: '다시듣기',
+        welcomeMain: '안녕하세요! 화면을 터치하여 말씀하세요.',
+        welcomeSub: '말하기를 마치려면 다시 터치하세요.',
+        startTime: '시작'
+      },
+      'en': {
+        idle: 'Tap to speak',
+        rec: 'Listening... (Tap to finish)',
+        placeholder: 'Type a message...',
+        send: 'Send',
+        replay: 'Replay',
+        welcomeMain: 'Hello! Tap the screen to speak.',
+        welcomeSub: 'Tap again to stop.',
+        startTime: 'Start'
+      },
+      'ja': {
+        idle: 'タップして話す',
+        rec: '聞いています... (タップで停止)',
+        placeholder: '直接入力...',
+        send: '送信',
+        replay: 'もう一度聞く',
+        welcomeMain: 'こんにちは！画面をタップして話してください。',
+        welcomeSub: '終了するにはもう一度タップします。',
+        startTime: '開始'
+      },
+      'vi': {
+        idle: 'Chạm để nói',
+        rec: 'Đang nghe... (Chạm để dừng)',
+        placeholder: 'Nhập tin nhắn...',
+        send: 'Gửi',
+        replay: 'Nghe lại',
+        welcomeMain: 'Xin chào! Chạm vào màn hình để nói.',
+        welcomeSub: 'Chạm lại để dừng nói.',
+        startTime: 'Bắt đầu'
+      },
+      'th': {
+        idle: 'แตะเพื่อพูด',
+        rec: 'กำลังฟัง... (แตะเพื่อหยุด)',
+        placeholder: 'พิมพ์ข้อความ...',
+        send: 'ส่ง',
+        replay: 'ฟังอีกครั้ง',
+        welcomeMain: 'สวัสดี! แตะที่หน้าจอเพื่อพูด',
+        welcomeSub: 'แตะอีกครั้งเพื่อหยุด',
+        startTime: 'เริ่ม'
+      },
+      'es': {
+        idle: 'Toca para hablar',
+        rec: 'Escuchando... (Toca para parar)',
+        placeholder: 'Escribe un mensaje...',
+        send: 'Enviar',
+        replay: 'Repetir',
+        welcomeMain: '¡Hola! Toca la pantalla para hablar.',
+        welcomeSub: 'Toca de nuevo para terminar.',
+        startTime: 'Inicio'
+      },
+      'zh-CN': {
+        idle: '点击说话',
+        rec: '正在倾听... (点击停止)',
+        placeholder: '输入消息...',
+        send: '发送',
+        replay: '重播',
+        welcomeMain: '你好！点击屏幕开始说话。',
+        welcomeSub: '再次点击结束说话。',
+        startTime: '开始'
+      }
+    };
+
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     let recognizer = null;
     let currentSpeaker = null;
@@ -389,12 +422,35 @@
     let partnerCode = 'tl', partnerTTS = 'tl-PH', pSpeed = 1.0;
     let userCode = 'ko', userTTS = 'ko-KR', uSpeed = 1.0;
 
-    function applyLanguages() {
+    function getLocale(code) {
+      return UI_LOCALES[code] || UI_LOCALES['en'];
+    }
+
+    function updatePanelUI(speaker) {
+      const code = speaker === 'partner' ? partnerCode : userCode;
+      const loc = getLocale(code);
+
+      document.getElementById(`${speaker}-badge`).innerText = loc.idle;
+      document.getElementById(`${speaker}-text`).placeholder = loc.placeholder;
+      document.getElementById(`${speaker}-send-btn`).innerText = loc.send;
+    }
+
+    function onLanguageChange(speaker) {
       const p = document.getElementById('partner-lang').value.split('|');
       partnerCode = p[0]; partnerTTS = p[1];
 
       const u = document.getElementById('user-lang').value.split('|');
       userCode = u[0]; userTTS = u[1];
+
+      updatePanelUI(speaker);
+    }
+
+    function initWelcomeCards() {
+      const pLoc = getLocale(partnerCode);
+      const uLoc = getLocale(userCode);
+
+      addCard('partner-chat', pLoc.welcomeMain, pLoc.welcomeSub, pLoc.startTime, partnerTTS, pSpeed, partnerCode);
+      addCard('user-chat', uLoc.welcomeMain, uLoc.welcomeSub, uLoc.startTime, userTTS, uSpeed, userCode);
     }
 
     function toggleSpeed(speaker) {
@@ -450,9 +506,11 @@
 
         const panel = document.getElementById(`${speaker}-panel`);
         const badge = document.getElementById(`${speaker}-badge`);
+        const code = speaker === 'partner' ? partnerCode : userCode;
+        const loc = getLocale(code);
 
         panel.classList.add('recording');
-        badge.innerText = "듣는 중... (터치 시 완료)";
+        badge.innerText = loc.rec;
 
         recognizer.onresult = async (ev) => {
           const text = ev.results[0][0].transcript;
@@ -463,7 +521,7 @@
 
         recognizer.onend = () => {
           panel.classList.remove('recording');
-          badge.innerText = "터치하여 말하기";
+          badge.innerText = loc.idle;
           recognizer = null;
           currentSpeaker = null;
         };
@@ -479,36 +537,34 @@
 
       if (speaker === 'user') {
         const trans = await fetchTranslate(text, userCode, partnerCode);
-        addCard('partner-chat', trans, text, time, partnerTTS, pSpeed);
-        addCard('user-chat', text, trans, time, userTTS, uSpeed);
+        addCard('partner-chat', trans, text, time, partnerTTS, pSpeed, partnerCode);
+        addCard('user-chat', text, trans, time, userTTS, uSpeed, userCode);
         playVoice(trans, partnerTTS, pSpeed);
       } else {
         const trans = await fetchTranslate(text, partnerCode, userCode);
-        addCard('user-chat', trans, text, time, userTTS, uSpeed);
-        addCard('partner-chat', text, trans, time, partnerTTS, pSpeed);
+        addCard('user-chat', trans, text, time, userTTS, uSpeed, userCode);
+        addCard('partner-chat', text, trans, time, partnerTTS, pSpeed, partnerCode);
         playVoice(trans, userTTS, uSpeed);
       }
     }
 
-    function addCard(containerId, main, sub, time, ttsLang, speed) {
+    function addCard(containerId, main, sub, time, ttsLang, speed, langCode) {
       const container = document.getElementById(containerId);
       const card = document.createElement('div');
       card.className = 'card';
       const clean = main.replace(/'/g, "\\'");
+      const loc = getLocale(langCode);
+
       card.innerHTML = `
         <div class="txt-trans">${main}</div>
         <div class="txt-orig">${sub}</div>
         <div class="card-foot">
-          <button class="btn-replay" onclick="event.stopPropagation(); playVoice('${clean}', '${ttsLang}', ${speed})">다시듣기</button>
+          <button class="btn-replay" onclick="event.stopPropagation(); playVoice('${clean}', '${ttsLang}', ${speed})">${loc.replay}</button>
           <span class="txt-time">${time}</span>
         </div>
       `;
       container.appendChild(card);
       container.scrollTop = container.scrollHeight;
-    }
-
-    async function sendChip(txt) {
-      await doTranslate(txt, 'user');
     }
 
     function onEnter(e, speaker) {
@@ -542,6 +598,11 @@
       utt.rate = speed;
       window.speechSynthesis.speak(utt);
     }
+
+    // 초기화
+    updatePanelUI('partner');
+    updatePanelUI('user');
+    initWelcomeCards();
   </script>
 </body>
 </html>
