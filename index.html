@@ -2,363 +2,545 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, vi  <meta name="viewport" content="wiap  <meta name="viewport" content="nt="yes" />
-  <meta name="apple-m  <meta name="apple-m  <mst  <meta name="apple-m  <meta na" />
-  <meta name="apple-mobile-web-app-tit  <mcontent="여행통역기" />
-  <link rel="manifest" href="manifest.json" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <title>Face-to-Face Travel Translator</title>
+  <link rel="manifest" href="manifest.json" />
   <style>
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
       -webkit-tap-highlight-color: transparent;
-                             wi     100%;
-                                                overflow: hidden;
-                                              em                    bo  , s                                          ;
-                                              em                    bo  , s       idth:   0%;                                   *                         �              ha                      :                               flex-direction: column;
-      padding: 10px 14px;
-      position: relative;
+    }
+    html, body {
+      width: 100%;
+      height: 100%;
+      height: 100dvh;
       overflow: hidden;
-      transition: background-color 0.2s, box-shadow 0.2s;
+      background-color: #0f172a;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     }
 
-    /* 상단: 상대방     /* 상단: 상대방     /* 상단: 상대방     /* 상단: 상대방     /* ransform: rotate(180deg);
+    /* 화면 전체를 완벽히 3분할하는 CSS Grid */
+    .app-grid {
+      display: grid;
+      grid-template-rows: 1fr 42px 1fr;
+      width: 100vw;
+      height: 100dvh;
+      overflow: hidden;
+    }
+
+    /* 공통 패널 */
+    .panel {
+      display: flex;
+      flex-direction: column;
+      padding: 8px 12px;
+      overflow: hidden;
+      min-height: 0; /* Flexbox 넘침 방지 핵심 속성 */
+      position: relative;
+      cursor: pointer;
+    }
+
+    /* 상단: 상대방 (180도 회전) */
+    .partner-panel {
+      grid-row: 1;
+      background-color: #f8fafc;
+      transform: rotate(180deg);
       border-bottom: 1px solid #cbd5e1;
     }
 
-
-   }
-border-bottom: 1px solid #cbd5e1;
-상ser-상ser-상ser-상ser-상ser-상ser-상ser-상s  상ser-�to상ser solid #cbd5e1;
+    /* 중앙: 광고 배너 슬롯 */
+    .ad-slot {
+      grid-row: 2;
+      background-color: #0f172a;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 20;
+      border-top: 1px solid #334155;
+      border-bottom: 1px solid #334155;
+    }
+    .ad-box {
+      font-size: 11px;
+      font-weight: 700;
+      color: #94a3b8;
+      border: 1px dashed #475569;
+      padding: 4px 16px;
+      border-radius: 4px;
+      letter-spacing: 1px;
     }
 
-    /* 녹음 활성화 시 테두리 애니    /* 녹음 활성화 시 테두리 애니     background-color: #fef2f2 !important;
+    /* 하단: 본인 (정방향) */
+    .user-panel {
+      grid-row: 3;
+      background-color: #ffffff;
+      border-top: 1px solid #cbd5e1;
+    }
+
+    /* 녹음 중 활성화 펄스 */
+    .panel.recording {
+      background-color: #fef2f2 !important;
       box-shadow: inset 0 0 0 3px #ef4444;
-      animation: pulse-border 1.5s infinite;
+      animation: pulse 1.5s infinite;
     }
-    @keyframes pulse-border {
+    @keyframes pulse {
       0% { box-shadow: inset 0 0 0 3px rgba(239, 68, 68, 0.8); }
       50% { box-shadow: inset 0 0 0 5px rgba(239, 68, 68, 0.3); }
       100% { box-shadow: inset 0 0 0 3px rgba(239, 68, 68, 0.8); }
     }
 
-    /* 상단 헤더 컨트롤 */
+    /* 헤더 컨트롤 바 */
     .header-bar {
       display: flex;
-      justify-content: space-between      justify-content: ster;
-      padding-bottom: 6      padding-bottom: m:      padding-bottom: 6      padding-bottom: m:      pad    gap:       padding-bottom: 6      padding-bottom: m:      padding-bottom: 6      padding-bottom: m:      pad    gap:       padding-bottoor      padding-bottom: 6      padding-bid    d5e1;
-      background-color: #ffffff;
-      outline: none;
-    }
-
-    .controls-group {
-      display: flex;
-      align-items: c    r;
+      justify-content: space-between;
+      align-items: center;
+      flex-shrink: 0;
+      height: 28px;
+      margin-bottom: 4px;
       gap: 6px;
     }
 
-    .speed-btn {
-      font-size: 11px;
+    .select-lang {
+      font-size: 12px;
       font-weight: bold;
-      padding: 4px 7px;
-      border-radius      border-radius      border-radius        background-color: #ffffff;
-      color: #334155;
+      color: #0f172a;
+      padding: 2px 4px;
+      border-radius: 4px;
+      border: 1px solid #cbd5e1;
+      background-color: #ffffff;
+      max-width: 140px;
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .btn-speed {
+      font-size: 10px;
+      font-weight: 700;
+      padding: 3px 6px;
+      border-radius: 4px;
+      border: 1px solid #cbd5e1;
+      background-color: #ffffff;
+      color: #475569;
       cursor: pointer;
     }
-    }
-cursor: pointer;
-  border-radius      border-radius      00  border-radius      border-radius      00  border-radius      bround-color: #e2e8f0;
+
+    .badge-status {
+      font-size: 10px;
+      font-weight: 700;
+      padding: 3px 6px;
+      border-radius: 10px;
+      background-color: #e2e8f0;
       color: #475569;
+      white-space: nowrap;
     }
-    .recording .guide-badg    .recording .guide-badg    .r444;
-      color: #f      color: #f    *       color: #f      color: #f    *       color: #f      color:  flex: 1;
+    .recording .badge-status {
+      background-color: #ef4444;
+      color: #ffffff;
+    }
+
+    /* 스크롤 대화창 (가장 중요) */
+    .chat-scroll {
+      flex: 1 1 0%;
+      min-height: 0;
       overflow-y: auto;
       display: flex;
       flex-direction: column;
-      gap: 10px;
-      padding: 8px 0;
-      scroll-behavior: smooth;
+      gap: 6px;
+      padding: 4px 0;
       -webkit-overflow-scrolling: touch;
     }
 
-    .msg-card {
-      display: flex;
-      flex-direction: column;
-      background: rgba(255      background: rgba(255     g:      background: rrd    adi      background: rgsh      background:gba(      background: rgba(25der: 1px solid rgba(0, 0, 0, 0.06);
+    .card {
+      background-color: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 6px 10px;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.03);
     }
-    }
-background: rgb-sbackground: rgb-sbacnd: #f1f5f9;
+    .partner-panel .card {
+      background-color: #f1f5f9;
     }
 
-    .msg-trans {
-      font-size: 17px;
+    .txt-trans {
+      font-size: 16px;
       font-weight: 700;
       color: #0f172a;
-      line-heig      line-heig     -b      line-heig      
-    .msg-orig    .msg-orig  iz    .msg-orig    .msg-orig  iz    .msg-orig    .msg-orig  iz    .msg-orig    .msg-orig  iz    .msg-orig    .msg-orig  iz    .me-    .msg-orig    .ms-i    :     .msg-orig    .msg-orig  iz    .msg-orig    .msg-orig  iz bo    .msg-orig    .msg-orig  iz    .msg-orig    .msg-orig  iz    .msg-orig    .msg-orig  iz    .msg-orig    .;
-      background: #e2e8f      background: #172a;
+      line-height: 1.3;
+      word-break: keep-all;
+    }
+    .txt-orig {
+      font-size: 11px;
+      color: #64748b;
+      margin-top: 2px;
+    }
+    .card-foot {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 4px;
+    }
+    .btn-replay {
+      font-size: 10px;
+      font-weight: 600;
+      background-color: #e2e8f0;
       border: none;
-      padding: 2px 8px;      padding: 2px 8:       padding: 2px 8px;              padding: 2px 8px;      padding: px;
+      padding: 2px 6px;
+      border-radius: 3px;
+      cursor: pointer;
+      color: #1e293b;
+    }
+    .txt-time {
+      font-size: 9px;
       color: #94a3b8;
     }
 
-    /* 여행 필수 표현 퀵 버튼 칩 바 */
-    .chips-bar {
+    /* 여행 퀵 칩 바 */
+    .chip-scroll {
       display: flex;
+      gap: 4px;
       overflow-x: auto;
-      gap: 6px;
       padding: 4px 0;
       flex-shrink: 0;
       scrollbar-width: none;
     }
-    .chips-bar::-webkit-scrollbar {
+    .chip-scroll::-webkit-scrollbar {
       display: none;
     }
-    .chip {
-      font-size: 11px;      font-sizegh      font-size: 11pxpa      font-size: 11px;in      font-size: 11por      font-size: 11px;      font-sizegh      font-size: 1co      font-size: 11px;      font-sizegh      font-size: 11pxpa      font-size: 11px;in      font-size: 11por      font-size: 11px;      font-sizegh      font-size: 1co      font-size: 11px;      font-sizegh      font-size: 11pxpa      font-size: 11px;in      font-size: 11por      font-size: 11px;      font-sizegh      font-size: 1co      font-size: 11px; 1p      font-size: 11px;      font-size
-      background-color: #ffffff      background-color: #ffffff      background-color: #ffffff      background-color: #ffffff      background-color: 1      background-colone;
-                                                    f;               po                   *                      슬              -banner-slot {
-      hei      hei      hei  kground-color: #1e293b;
-      display      display      display      dite      display      s: cente      disple      display      display      display      dite      display      s: cente      disple      display      display      display      dite      display      s: cente      disple      display      display      display      dite      display      s: cente      disple      display      display      display      dite      display      s: cente      disple      display      display      display      dite      display      s: cente      disple      display      display      display      dite      display      s: cente      disple      display      display     column;
+    .chip-item {
+      font-size: 11px;
+      font-weight: 600;
+      background-color: #eff6ff;
+      color: #1d4ed8;
+      border: 1px solid #bfdbfe;
+      padding: 3px 8px;
+      border-radius: 12px;
+      white-space: nowrap;
+      cursor: pointer;
+    }
+
+    /* 하단 텍스트 입력창 */
+    .input-row {
+      display: flex;
+      gap: 4px;
+      padding-top: 4px;
+      flex-shrink: 0;
+      height: 32px;
+    }
+    .text-box {
+      flex: 1;
+      font-size: 12px;
+      padding: 4px 8px;
+      border-radius: 16px;
+      border: 1px solid #cbd5e1;
+      outline: none;
+      background-color: #ffffff;
+    }
+    .btn-send {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 0 10px;
+      border-radius: 16px;
+      border: none;
+      background-color: #2563eb;
+      color: #ffffff;
+      cursor: pointer;
+    }
+
+    /* 권한 오버레이 */
+    .overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.95);
+      z-index: 100;
+      display: flex;
+      flex-direction: column;
       justify-content: center;
       align-items: center;
-      padding: 24px;
+      padding: 20px;
       color: #ffffff;
       text-align: center;
     }
-    .permission-btn {
-      margin-top      margin-top      margin-top      margin-top      margin-top      margin-top      margin-top      margin-top      margin-top      margin-tot-      margin-top      margin-top      margin-top   pointer;
+    .btn-start {
+      margin-top: 16px;
+      padding: 12px 24px;
+      background-color: #2563eb;
+      border: none;
+      border-radius: 20px;
+      color: white;
+      font-size: 15px;
+      font-weight: bold;
+      cursor: pointer;
     }
   </style>
 </head>
 <body>
 
-  <!-- 권한 안내 화면 -->
-  <div id="permissionOverlay" class="permission-overlay">
-    <h2 style="margin-bottom: 12px; font-size: 20px;">대면 여행 통역기</h2>
-    <p style="font-size: 14px; color: #cbd5e1; line-height: 1.6; max-width: 290px;">
-      스마트폰을 테이블 중앙에 놓으세요.<br>
-      각 영역의 빈 공간을 <strong>터치</strong>하면 말하기가 시작되고 다시 터치하면 중지됩니다.
+  <!-- 마이크 권한 모달 -->
+  <div id="overlay" class="overlay">
+    <h2 style="font-size: 18px; margin-bottom: 8px;">대면 여행 통역기</h2>
+    <p style="font-size: 13px; color: #cbd5e1; line-height: 1.5;">
+      스마트폰을 테이블 중앙에 평평히 놓으세요.<br>
+      각 영역의 빈 공간을 <strong>터치</strong>하여 대화합니다.
     </p>
-    <button class="permission-btn" onclick="initAudioPermissions()">마이크 허용 및 시작</button>
+    <button class="btn-start" onclick="initMic()">마이크 허용 및 시작</button>
   </div>
 
-  <div class="app-layout">
-    <!-- 상단: �    <!-- 상단: �    <!-- �)     <!-- 상단: �    <!se    <!-- 상단: �on    <!-- 상단: � on    <!-- 상단: �    <nt    artner')">
+  <div class="app-grid">
+    <!-- 상단: 상대방 영역 (180도 반전) -->
+    <div class="panel partner-panel" id="partner-panel" onclick="onPanelTap(event, 'partner')">
       <div class="header-bar" onclick="event.stopPropagation()">
-        <select id="partner-lang-select" class="lang-select" onchange="updateLanguages()">
+        <select id="partner-lang" class="select-lang" onchange="applyLanguages()">
           <option value="tl|tl-PH" selected>필리핀 (Tagalog)</option>
-          <option value="en|en-US">미          <option value="en|en            <option value="en|en-US">미          <option io          <option value="en|en-US">미          <option value="en|en            <   <option value="th|th-TH">태국 (ภาษาไทย)</option>
+          <option value="en|en-US">공용 (English)</option>
+          <option value="ja|ja-JP">일본 (日本語)</option>
+          <option value="vi|vi-VN">베트남 (Tiếng Việt)</option>
+          <option value="th|th-TH">태국 (ภาษาไทย)</option>
           <option value="es|es-ES">스페인 (Español)</option>
-          <opt          <opt          <opt          <opt          <opt          <opt          <opt          <opt          <opt          <opect>
-                                                                                                   lick="toggleSpeed('par                         ton>
-          <span class="guide-badge" id="partner-badge">터치하여 말하기</span>
+          <option value="zh-CN|zh-CN">중국 (中文)</option>
+          <option value="ko|ko-KR">한국 (한국어)</option>
+        </select>
+        <div class="header-right">
+          <button class="btn-speed" id="partner-spd" onclick="toggleSpeed('partner')">1.0x</button>
+          <span class="badge-status" id="partner-badge">터치하여 말하기</span>
         </div>
       </div>
 
-      <div class="messages-container" id="pa      <div class="messages-container" id="pa      <div class="m        <div class="msg-trans">Kamusta! Pindutin ang screen para magsalita.</div>
-          <          <          <          <          <          <          <     ��          <          <          <          <          <          <          <     ��          <          <          <          <          <          <          <     ��          <          <          <          <          <          <          <     ��          <          < n>
+      <div class="chat-scroll" id="partner-chat">
+        <div class="card">
+          <div class="txt-trans">Kamusta! Pindutin para magsalita.</div>
+          <div class="txt-orig">화면을 터치하여 말씀하세요.</div>
+          <div class="card-foot">
+            <button class="btn-replay" onclick="event.stopPropagation(); playVoice('Kamusta! Pindutin para magsalita.', partnerTTS, pSpeed)">다시듣기</button>
+            <span class="txt-time">시작</span>
           </div>
         </div>
       </div>
 
-      <div class="input-bar" onclick="event.stopPropagation()">
-        <input type="text" id="partner-input" class="text-input" placeholder="직접 입력 (상대방 언어)" onkeypress="handleEnter(event, 'partner')" />
-        <button class="send-btn" onclick="handleDirectSend('partner')">전송</button>
+      <div class="input-row" onclick="event.stopPropagation()">
+        <input type="text" id="partner-text" class="text-box" placeholder="직접 입력 (상대방 언어)" onkeypress="onEnter(event, 'partner')" />
+        <button class="btn-send" onclick="sendDirect('partner')">전송</button>
       </div>
     </div>
 
-    <!-- 중앙: 광고 배너 영역 -->
-    <div class="ad-banner-slot">
-               s="ad-placeholder">AD BANNER AREA (320 x 50)</div>
+    <!-- 중앙: 광고 영역 -->
+    <div class="ad-slot">
+      <div class="ad-box">AD BANNER (320x50)</div>
     </div>
 
     <!-- 하단: 본인 영역 (정방향) -->
-    <div class="chat-section user-section" id="user-zone" onclick="handleZoneTap(e    <div class="chat-section user-section" id="user-zone" onclick="handleZoneTap(e    <div class="chat-section user-section" id="user-zone" onclick="handleZoneTap(e    <div class="chat-section user-section" id="user-zone" onclick="handleZoneTap(e    <div class="chat-section user-section" id="user-zone" onclick="handleZoneTap(e    <div class="chat-section us>
-          <option value="zh-CN|zh          <: 중국어</option>
+    <div class="panel user-panel" id="user-panel" onclick="onPanelTap(event, 'user')">
+      <div class="header-bar" onclick="event.stopPropagation()">
+        <select id="user-lang" class="select-lang" onchange="applyLanguages()">
+          <option value="ko|ko-KR" selected>본인: 한국어</option>
+          <option value="en|en-US">본인: 영어</option>
+          <option value="ja|ja-JP">본인: 일본어</option>
+          <option value="zh-CN|zh-CN">본인: 중국어</option>
         </select>
-        <div class="controls-group">
-          <button class="speed-btn" id="user-speed-btn" onclick="toggleSpeed('user')">속도: 1.0x</button>
-          <span class="guide-badge" id="u          <span class="guide-badge" id="u          <span class="guide-badge" id="u   s="messages-con         d="          <span class="guide-badge" id="ca          <span class="guide-batr          <span class="guide-badge" id="u          <span class=div            <div class="msg-orig">말하기를 마치려면          <span class="guide-badge" id="u          <span class="guide-badge" id="u          <span class="guide-badge" id="u   s="messages-con         d="          <span class="guide-badge" id="ca          <span class="guide-batr          <span class="guide-badge" id="u          <span class=div            <div class="msg-orig">말하기를 마치려면          <span class="guide-badge" id="u          <span class="guide-badge" id="u      pP          <span class="guide-badge" id="u          <span class=hrase('얼마예요?          <span class="guide-badge"<button class="chip" onclick="sendQuickPhrase('계산해 주세요.')">계산해 주세요</button>
-        <button class="chip" onclick="sendQuickPhrase('영수증 주세요.')">영수증 주세요</button>
-        <button class="chip" onclick="sendQuickPhrase('고수 빼주세요.')">고수 빼주세요</button>
-        <button class="chip" onclick="sendQuickPhrase('화장실 어디예요?')">화장실 어디예요?</button>
-        <button class="chip" onclick="sendQuickPhrase('물 좀 주세요.')">물 좀 주세요</button>
-        <button class="chip" onclick="sendQuickPhrase('안 맵게 해주세요.')">안 맵게 해주세요</button>
-        <button class="chip" onclick="sendQuickPhrase('추천 메뉴 있나요?')">추천 메뉴 있나요?</button>
+        <div class="header-right">
+          <button class="btn-speed" id="user-spd" onclick="toggleSpeed('user')">1.0x</button>
+          <span class="badge-status" id="user-badge">터치하여 말하기</span>
+        </div>
       </div>
 
-      <div class="input-bar" onclick="event.stopPropagation()">
-        <input type="text" id="user-input" class="text-input" placeholder="직접 입력 (한국어)" onkeypress="handleEnter(event, 'user')" />
-        <button class="send-btn" onclick="handleDirectSend('user')">전송</button>
+      <div class="chat-scroll" id="user-chat">
+        <div class="card">
+          <div class="txt-trans">안녕하세요! 화면을 터치하여 말씀하세요.</div>
+          <div class="txt-orig">말하기를 마치려면 다시 터치하세요.</div>
+          <div class="card-foot">
+            <button class="btn-replay" onclick="event.stopPropagation(); playVoice('안녕하세요! 화면을 터치하여 말씀하세요.', userTTS, uSpeed)">다시듣기</button>
+            <span class="txt-time">시작</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 여행 퀵 칩 바 -->
+      <div class="chip-scroll" onclick="event.stopPropagation()">
+        <button class="chip-item" onclick="sendChip('얼마예요?')">얼마예요?</button>
+        <button class="chip-item" onclick="sendChip('계산해 주세요.')">계산해 주세요</button>
+        <button class="chip-item" onclick="sendChip('영수증 주세요.')">영수증 주세요</button>
+        <button class="chip-item" onclick="sendChip('고수 빼주세요.')">고수 빼주세요</button>
+        <button class="chip-item" onclick="sendChip('화장실 어디예요?')">화장실 어디예요?</button>
+        <button class="chip-item" onclick="sendChip('물 좀 주세요.')">물 좀 주세요</button>
+        <button class="chip-item" onclick="sendChip('안 맵게 해주세요.')">안 맵게 해주세요</button>
+      </div>
+
+      <div class="input-row" onclick="event.stopPropagation()">
+        <input type="text" id="user-text" class="text-box" placeholder="직접 입력 (한국어)" onkeypress="onEnter(event, 'user')" />
+        <button class="btn-send" onclick="sendDirect('user')">전송</button>
       </div>
     </div>
   </div>
 
   <script>
-                                                                                                              (e                                                                                                          et recognition = null;
-    let activeSpeaker = null;
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js').catch(() => {});
+    }
 
-    let partnerTransLang = 'tl';
-    let partnerTTSLang = 'tl-P    let partnerTTSLang = 'tl-P    let partnerTTSLang = 'tl-P    let partnerTTSLang = 'tl-P    let partus    let partnerTTSLang = 'tl-P    let partnerTTSLang = 'tl-P    let partnerTTSLang = 'tl-P    let partnerTTSLang =.value.split('|');
-      partnerTransLang = pVal[0];
-      partnerTTSLang = pVal[1];
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    let recognizer = null;
+    let currentSpeaker = null;
 
-      const uVal = document.getEl      constuse      const uVal = document.getEl      constuse      const uVa];
-      userTTSLang = uVal[1];
+    let partnerCode = 'tl', partnerTTS = 'tl-PH', pSpeed = 1.0;
+    let userCode = 'ko', userTTS = 'ko-KR', uSpeed = 1.0;
+
+    function applyLanguages() {
+      const p = document.getElementById('partner-lang').value.split('|');
+      partnerCode = p[0]; partnerTTS = p[1];
+
+      const u = document.getElementById('user-lang').value.split('|');
+      userCode = u[0]; userTTS = u[1];
     }
 
     function toggleSpeed(speaker) {
       if (speaker === 'partner') {
-        partnerSpeed = partnerSpeed === 1.0 ? 0.8 : 1.0;
-        document.getElementById('partner-speed-btn').innerText = `속도: ${partnerSpeed}x`;
+        pSpeed = pSpeed === 1.0 ? 0.8 : 1.0;
+        document.getElementById('partner-spd').innerText = pSpeed + 'x';
       } else {
-        userSpeed = userSpeed === 1.0 ? 0.8 : 1.0;
-        document.getElementById('user-speed-btn').innerText = `속도: ${userSpeed}x`;
+        uSpeed = uSpeed === 1.0 ? 0.8 : 1.0;
+        document.getElementById('user-spd').innerText = uSpeed + 'x';
       }
     }
 
-    async function initAudioPermissions() {
+    async function initMic() {
       try {
         if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-          throw new Error("HTTPS 보안 연결이 필요합니다.");
+          throw new Error("HTTPS 연결이 필요합니다.");
         }
         const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-        stream.getTracks().forEach(track => track.stop());
-        document.getElementById('permissionOverlay').style.display = 'none';
-      } catch (err) {
-        alert("마이크 권한이 필요합니다: " + err.message);
+        stream.getTracks().forEach(t => t.stop());
+        document.getElementById('overlay').style.display = 'none';
+      } catch (e) {
+        alert("마이크 권한을 허용해 주세요: " + e.message);
       }
     }
 
-    function handleZoneTap(event, speaker) {
-      // 폼 컨트롤, 버튼 클릭 시 배경 녹음 방지
-      if (['INPUT', 'BUTTON', 'SELECT'].includes(event.target.tagName)) return;
+    function onPanelTap(e, speaker) {
+      if (['INPUT', 'BUTTON', 'SELECT'].includes(e.target.tagName)) return;
 
-      if (recognition && activeSpeaker === speaker) {
-        recognition.stop();
+      if (recognizer && currentSpeaker === speaker) {
+        recognizer.stop();
         return;
       }
-      if (recognition) {
-        recognition.abort();
+      if (recognizer) {
+        recognizer.abort();
       }
 
-      const lang = speaker === 'user' ? userTTSLang : partnerTTSLang;
-      startListening(lang, speaker);
+      const lang = speaker === 'user' ? userTTS : partnerTTS;
+      startSTT(lang, speaker);
     }
 
-    function startListening(lang, speaker) {
+    function startSTT(lang, speaker) {
       if (!SpeechRecognition) {
-        alert("음성 인식을 지원하지 않는 브라우저입니다. Safari 또는 Chrome을 이용해 주세요.");
+        alert("브라우저 음성 인식이 지원되지 않습니다. Safari 또는 Chrome을 이용해 주세요.");
         return;
       }
 
       try {
-        recognition = new SpeechRecognition();
-        activeSpeaker = speaker;
-        recognition.lang = lang;
-        recognition.interimResults = false;
-        recognition.maxAlternatives = 1;
+        recognizer = new SpeechRecognition();
+        currentSpeaker = speaker;
+        recognizer.lang = lang;
+        recognizer.interimResults = false;
+        recognizer.maxAlternatives = 1;
 
-        const zone = document.getElementById(`${speaker}-zone`);
+        const panel = document.getElementById(`${speaker}-panel`);
         const badge = document.getElementById(`${speaker}-badge`);
 
-        zone.classList.add('recording');
+        panel.classList.add('recording');
         badge.innerText = "듣는 중... (터치 시 완료)";
 
-        recognition.onresult = async (event) => {
-          const transcript = event.results[0][0].transcript;
-          await processTranslation(transcript, speaker);
+        recognizer.onresult = async (ev) => {
+          const text = ev.results[0][0].transcript;
+          await doTranslate(text, speaker);
         };
 
-        recognition.onerror = (event) => {
-          console.error("Speech Recognition Error:", event.error);
-        };
+        recognizer.onerror = () => {};
 
-        recognition.onend = () => {
-          zone.classList.remove('recording');
+        recognizer.onend = () => {
+          panel.classList.remove('recording');
           badge.innerText = "터치하여 말하기";
-          recognition = null;
-          activeSpeaker = null;
+          recognizer = null;
+          currentSpeaker = null;
         };
 
-        recognition.start();
-      } catch (e) {
-        console.error("Recognition Start Error:", e);
+        recognizer.start();
+      } catch (err) {
+        console.error(err);
       }
     }
 
-    async function processTranslation(text, speaker) {
-      const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    async function doTranslate(text, speaker) {
+      const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
       if (speaker === 'user') {
-        const translated = await translate(text, userTransLang, partnerTransLang);
-        appendMessageCard('partner-messages', translated, text, timeStr, true, partnerTTSLang, partnerSpeed);
-        appendMessageCard('user-messages', text, translated, timeStr, false, userTTSLang, userSpeed);
-        playTTS(translated, partnerTTSLang, partnerSpeed);
+        const trans = await fetchTranslate(text, userCode, partnerCode);
+        addCard('partner-chat', trans, text, time, partnerTTS, pSpeed);
+        addCard('user-chat', text, trans, time, userTTS, uSpeed);
+        playVoice(trans, partnerTTS, pSpeed);
       } else {
-        const translated = await translate(text, partnerTransLang, userTransLang);
-        appendMessageCard('user-messages', translated, text, timeStr, true, userTTSLang, userSpeed);
-        appendMessageCard('partner-messages', text, translated, timeStr, false, partnerTTSLang, partnerSpeed);
-        playTTS(translated, userTTSLang, userSpeed);
+        const trans = await fetchTranslate(text, partnerCode, userCode);
+        addCard('user-chat', trans, text, time, userTTS, uSpeed);
+        addCard('partner-chat', text, trans, time, partnerTTS, pSpeed);
+        playVoice(trans, userTTS, uSpeed);
       }
     }
 
-    function appendMessageCard(containerId, mainText, subText, time, isPartnerCard, ttsLang, speed) {
+    function addCard(containerId, main, sub, time, ttsLang, speed) {
       const container = document.getElementById(containerId);
       const card = document.createElement('div');
-      card.className = 'msg-card' + (isPartnerCard ? ' partner-side' : '');
-      
-      const escapedText = mainText.replace(/'/g, "\\'");
+      card.className = 'card';
+      const clean = main.replace(/'/g, "\\'");
       card.innerHTML = `
-        <div class="msg-trans">${mainText}</div>
-        <div class="msg-orig">${subText}</div>
-        <div class="msg-footer">
-          <button class="replay-btn" onclick="event.stopPropagation(); playTTS('${escapedText}', '${ttsLang}', ${speed})">다시 듣기</button>
-          <span class="msg-time">${time}</span>
+        <div class="txt-trans">${main}</div>
+        <div class="txt-orig">${sub}</div>
+        <div class="card-foot">
+          <button class="btn-replay" onclick="event.stopPropagation(); playVoice('${clean}', '${ttsLang}', ${speed})">다시듣기</button>
+          <span class="txt-time">${time}</span>
         </div>
       `;
       container.appendChild(card);
       container.scrollTop = container.scrollHeight;
     }
 
-    async function sendQuickPhrase(phrase) {
-      await processTranslation(phrase, 'user');
+    async function sendChip(txt) {
+      await doTranslate(txt, 'user');
     }
 
-    function handleEnter(event, speaker) {
-      if (event.key === 'Enter') {
-        handleDirectSend(speaker);
-      }
+    function onEnter(e, speaker) {
+      if (e.key === 'Enter') sendDirect(speaker);
     }
 
-    async function handleDirectSend(speaker) {
-      const inputEl = document.getElementById(`${speaker}-input`);
-      const text = inputEl.value.trim();
-      if (!text) return;
-      inputEl.value = '';
-      await processTranslation(text, speaker);
+    async function sendDirect(speaker) {
+      const inp = document.getElementById(`${speaker}-text`);
+      const txt = inp.value.trim();
+      if (!txt) return;
+      inp.value = '';
+      await doTranslate(txt, speaker);
     }
 
-    async function translate(text, sl, tl) {
+    async function fetchTranslate(text, sl, tl) {
       try {
         const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=${sl}&tl=${tl}&dt=t&q=${encodeURIComponent(text)}`;
         const res = await fetch(url);
         const data = await res.json();
         return data[0].map(item => item[0]).join('');
-      } catch (err) {
-        return "[번역 오류] " + text;
+      } catch (e) {
+        return "[번역 실패] " + text;
       }
     }
 
-    function playTTS(text, lang, speed = 1.0) {
+    function playVoice(text, lang, speed = 1.0) {
       if (!window.speechSynthesis) return;
       window.speechSynthesis.cancel();
-      const utterance = new SpeechSynthesisUtterance(text);
-      utterance.lang = lang;
-      utterance.rate = speed;
-      window.speechSynthesis.speak(utterance);
+      const utt = new SpeechSynthesisUtterance(text);
+      utt.lang = lang;
+      utt.rate = speed;
+      window.speechSynthesis.speak(utt);
     }
   </script>
 </body>
