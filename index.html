@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+  <title>Face-to-Face Translator</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+    }
+    body, html {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+    .container {
+      display: flex;
+      flex-direction: column;
+      width: 100vw;
+      height: 100vh;
+    }
+    
+    /* 상대방 화면 (180도 회전) */
+    .partner-section {
+      flex: 1;
+      background-color: #f1f5f9;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 20px;
+      transform: rotate(180deg);
+      border-bottom: 2px dashed #94a3b8;
+    }
+
+    /* 본인 화면 */
+    .user-section {
+      flex: 1;
+      background-color: #ff      background-coloflex;
+      flex-direction: column;
+       ustify-content: space-between       ustify-content: space-between       ustify-content: space-between       ustify-contece       ustify-content: space-between            uiz      x;       ustify-content: space font-weight: bold;       ustify-cot-       ustify-content: ;
+                    
+                   n:                  ti                   n:                      n:                  ti                   n:                      4a    
+                tom: 8px;
+      min-height: 20px;
+    }
+
+    .transla    .transla    .ton    .transla    .tr f    we   t: bold;
+      color: #0f172a;
+      line-hei      line-hei      lei      line-he  }
+
+    .btn-container {
+      dis      dis      di jus      dis      dis      di j
+                                                                                           on                                             border: none;
+      border-      border-             border-er      border-      border-             border-er   te;      border-      border- nd-color 0.2s;
+    }
+
+    .mic-btn.recording {
+      background-color: #dc2626;
+      animation: pulse 1.5s infinite;
+    }
+
+    @keyframes pulse {
+      0% { opacity: 1; }
+      50% { opacity: 0.6; }
+      100% { opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="contai  <div class="conta��방 영역 (상단: 180도 회전) -->
+    <div class="partner-section">
+      <div class="header">
+        <span>상대방 (Filipino / Tagalog)</span>
+                            atus">대기 중</span>
+      </d      </d      </d      </d      </d      </d      </d      </d      t"      </d      </d  ��      </d      </d      </d      </d      </d      <nsl      </d      </d ne      </d      </d      </d      </d      </d      </d           </d      </d      </d      </d      </d      </d      </d      </d      t"      </d      </d  ��      </d      </d      </d      </d      </d   on>
+      </div>
+    </div>
+
+    <!-- 본인 영역 (하단: 정방향) -->
+    <div class="user-section">
+      <div class="header">
+        <spa    ��        <spa    ��              <spa    ��        <spa�� 중</span>
+      </div>
+      <div class="te      <div class="te <d      <div class="te   "       <div class="te      ��      <div class="te     <d    la      <dilated-text" id="user-trans">안녕하세요! (번역 결과)</div>
+      </div>
+      <div class="btn-container">
+        <button cl        <button cl       c" onclick="toggleRecognition('ko-KR', 'user')">말하        <button cl        <button cl       c" oncl </div>
+
+  <script>
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    let recognition = null;
+    let activeSpeaker = null;
+
+    if (!SpeechRecognition) {
+      alert("현재 브라우저는 Web Speech API를 지원하지 않습니다. Chrome/Safari 최신 버전을 권장합니다.");
+    }
+
+    function toggleRecognition(lang, speaker) {
+      i      i    ion && activeS      i      i    ion && activeS      i     op(      i      i    ion && acti     if (recognition) {
+                                                                                             SpeechRecognition();
+      recognition.lang = lang;
+      recognition.interimResults = false;
+      recognition.maxAlternatives = 1;
+
+      const micBtn = document.getElementById(`${speaker}-mic`);
+      const statusSpa      constt.      const statusSpa      status`);
+
+      micBtn.classList.add("recording");
+      micBtn.innerText = "듣는 중...";
+      statusSpan.innerText = "음성 인식 중";
+
+      recognition.      rec=       recognition.      rec=       recognition.      rec=       recognition.      rec=  ai      recognition.      recr      recognition.      rec=         recognition.      rec=)       recognition.      rec=       recognition.      rec=       recognition.      rec=       recognition.      rec=  ai      recogor             recognition.      rec=       recognition micBtn.classList.remove("recording");
+        micBtn.innerText = speaker === 'user' ? "말하기 (한국어)" : "말하기 (Tagalog)"        micBtn.innerText = speaker === 'user' ? "말하기 (한국어)" : "말하기 (Tagalog)"        micBtn.in;
+        micBtn.innerText = s           micBtn.innerText = s           mt(        micBtn.innerText = s         = '        micBtn.innerText = s           micBtn.innerText = s   Text = text;
+        const translated = await translateText(text, 'ko', 't        const translated = await translar        const translated = await transla          const translated = await translateText(t{
+                                                                                                                                                                                                                                                                                                                                                                                                                                               {s                                                                                                                                                                                                               error:", err);
+        return "[번역 실패] " + text;
+      }
+    }
+
+    function speakText(text, lang) {
+      if (!window.speechSynthesis) return;
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = lang;
+      window.speechSynthesis.speak(utterance);
+    }
+  </script>
+</body>
+</html>
