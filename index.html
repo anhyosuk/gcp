@@ -23,7 +23,7 @@
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     }
 
-    /* 3단 CSS Grid */
+    /* 3단 CSS Grid (상단 1fr - 중앙 42px - 하단 1fr) */
     .app-grid {
       display: grid;
       grid-template-rows: 1fr 42px 1fr;
@@ -453,8 +453,8 @@
       const pLoc = getLocale(partnerCode);
       const uLoc = getLocale(userCode);
 
-      addCard('partner-chat', pLoc.welcomeMain, pLoc.welcomeSub, pLoc.startTime, partnerTTS, pSpeed, partnerCode);
-      addCard('user-chat', uLoc.welcomeMain, uLoc.welcomeSub, uLoc.startTime, userTTS, uSpeed, userCode);
+      addCard('partner-chat', pLoc.welcomeMain, pLoc.welcomeSub, pLoc.startTime, partnerTTS, pSpeed, partnerCode, true);
+      addCard('user-chat', uLoc.welcomeMain, uLoc.welcomeSub, uLoc.startTime, userTTS, uSpeed, userCode, true);
     }
 
     function toggleSpeed(speaker) {
@@ -541,21 +541,28 @@
 
       if (speaker === 'user') {
         const trans = await fetchTranslate(text, userCode, partnerCode);
-        addCard('partner-chat', trans, text, time, partnerTTS, pSpeed, partnerCode);
-        addCard('user-chat', text, trans, time, userTTS, uSpeed, userCode);
+        addCard('partner-chat', trans, text, time, partnerTTS, pSpeed, partnerCode, false);
+        addCard('user-chat', text, trans, time, userTTS, uSpeed, userCode, false);
         playVoice(trans, partnerTTS, pSpeed);
       } else {
         const trans = await fetchTranslate(text, partnerCode, userCode);
-        addCard('user-chat', trans, text, time, userTTS, uSpeed, userCode);
-        addCard('partner-chat', text, trans, time, partnerTTS, pSpeed, partnerCode);
+        addCard('user-chat', trans, text, time, userTTS, uSpeed, userCode, false);
+        addCard('partner-chat', text, trans, time, partnerTTS, pSpeed, partnerCode, false);
         playVoice(trans, userTTS, uSpeed);
       }
     }
 
-    function addCard(containerId, main, sub, time, ttsLang, speed, langCode) {
+    function addCard(containerId, main, sub, time, ttsLang, speed, langCode, isWelcome = false) {
       const container = document.getElementById(containerId);
+
+      // 실제 대화가 입력되면 기존 안내 카드 자동 삭제
+      if (!isWelcome) {
+        const welcomeCards = container.querySelectorAll('.welcome-card');
+        welcomeCards.forEach(c => c.remove());
+      }
+
       const card = document.createElement('div');
-      card.className = 'card';
+      card.className = 'card' + (isWelcome ? ' welcome-card' : '');
       const clean = main.replace(/'/g, "\\'");
       const loc = getLocale(langCode);
 
@@ -568,6 +575,12 @@
         </div>
       `;
       container.appendChild(card);
+
+      // 최대 3개의 대화 카드만 유지 (오래된 카드부터 순차 삭제)
+      while (container.querySelectorAll('.card').length > 3) {
+        container.firstElementChild.remove();
+      }
+
       container.scrollTop = container.scrollHeight;
     }
 
