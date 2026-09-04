@@ -400,8 +400,7 @@
       'es': {
         idle: 'Toca para hablar',
         rec: 'Escuchando... (Toca para parar)',
-        placeholder: 'Escribe un mensaje...',
-        send: 'Enviar',
+        placeholder: 'Escribe un mensaje..            send: 'Enviar',
         replay: 'Repetir',
         welcomeMain: '¡Hola! Toca la pantalla para hablar.',
         welcomeSub: 'Toca de nuevo para terminar.',
@@ -422,6 +421,8 @@
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     let recognizer = null;
     let currentSpeaker = null;
+    let latestTranscript = '';
+    let isResultProcessed = false;
 
     let partnerCode = 'tl', partnerTTS = 'tl-PH', pSpeed = 1.0;
     let userCode = 'ko', userTTS = 'ko-KR', uSpeed = 1.0;
@@ -483,16 +484,35 @@
     function onPanelTap(e, speaker) {
       if (['INPUT', 'BUTTON', 'SELECT'].includes(e.target.tagName)) return;
 
+      // 이미 녹음 중인 패널을 다시 탭한 경우 -> 즉시 중지 및 번역 처리
       if (recognizer && currentSpeaker === speaker) {
-        recognizer.stop();
+        finishAndStopListening();
         return;
       }
+
+      // 다른 패널이 녹음 중인 상태에서 탭한 경우 -> 이전 녹음 완료 후 새로 시작
       if (recognizer) {
-        recognizer.abort();
+        finishAndStopListening();
       }
 
       const lang = speaker === 'user' ? userTTS : partnerTTS;
       startSTT(lang, speaker);
+    }
+
+    function finishAndStopListening() {
+      if (!recognizer) return;
+      
+      // 수동 터치로 멈췄을 때 지금까지 수집된 실시간 음성을 즉시 번역
+      if (!isResultProcessed && latestTranscript.trim() && currentSpeaker) {
+        isResultProcessed = true;
+        doTranslate(latestTranscript.trim(), currentSpeaker);
+      }
+
+      try {
+        recognizer.stop();
+      } catch (e) {
+        recognizer.abort();
+      }
     }
 
     function startSTT(lang, speaker) {
@@ -504,8 +524,12 @@
       try {
         recognizer = new SpeechRecognition();
         currentSpeaker = speaker;
+        latestTranscript = '';
+        isResultProcessed = false;
+
         recognizer.lang = lang;
-        recognizer.interimResults = false;
+        // 실시간 중간 결과 수집 활성화 (중간에 터치로 멈춰도 텍스트가 유실되지 않음)
+        recognizer.interimResults = true;
         recognizer.maxAlternatives = 1;
 
         const panel = document.getElementById(`${speaker}-panel`);
@@ -516,18 +540,33 @@
         panel.classList.add('recording');
         badge.innerText = loc.rec;
 
-        recognizer.onresult = async (ev) => {
-          const text = ev.results[0][0].transcript;
-          await doTranslate(text, speaker);
+        recognizer.onresult = (ev) => {
+          let accumulated = '';
+          for (let i = 0; i < ev.results.length; ++i) {
+            accumulated += ev.results[i][0].transcript;
+          }
+          if (accumulated.trim()) {
+            latestTranscript = accumulated;
+          }
         };
 
-        recognizer.onerror = () => {};
+        recognizer.onerror = (err) => {
+          console.error("STT Error:", err);
+        };
 
         recognizer.onend = () => {
+          // 자연 종료(침묵) 또는 정상 종료 시 번역 처리
+          if (!isResultProcessed && latestTranscript.trim() && currentSpeaker) {
+            isResultProcessed = true;
+            doTranslate(latestTranscript.trim(), currentSpeaker);
+          }
+
           panel.classList.remove('recording');
           badge.innerText = loc.idle;
           recognizer = null;
           currentSpeaker = null;
+          latestTranscript = '';
+          isResultProcessed = false;
         };
 
         recognizer.start();
@@ -576,7 +615,7 @@
       `;
       container.appendChild(card);
 
-      // 최대 3개의 대화 카드만 유지 (오래된 카드부터 순차 삭제)
+      // 최대 3개 대화 카드만 유지
       while (container.querySelectorAll('.card').length > 3) {
         container.firstElementChild.remove();
       }
